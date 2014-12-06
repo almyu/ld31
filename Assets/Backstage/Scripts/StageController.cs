@@ -9,7 +9,7 @@ public class StageController : MonoBehaviour {
 
     public UnityEvent scrollLeftOn, scrollRightOn, scrollOff, windLeftOn, windRightOn, windOff;
 
-    private int scroll = 0, wind = 0;
+    public int scroll = 0, wind = 0;
 
     private void Update() {
         var delta = player.position - transform.position;
