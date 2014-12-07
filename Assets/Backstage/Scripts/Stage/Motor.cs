@@ -20,13 +20,13 @@ public class Motor : MonoBehaviour {
         cachedTransform = transform;
     }
 
-    private void FixedUpdate() {
+    private void Update() {
         var oldVelocity = velocity;
-        velocity.y += gravity * Time.fixedDeltaTime;
+        velocity.y += gravity * Time.deltaTime;
 
         var meanVelocity = (oldVelocity + velocity) * 0.5f + wind;
 
-        cachedTransform.position += (Vector3)(meanVelocity * Time.fixedDeltaTime);
+        cachedTransform.position += (Vector3)(meanVelocity * Time.deltaTime);
 
         if (cachedTransform.position.y <= ground) {
             cachedTransform.position = cachedTransform.position.WithY(ground);
