@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 [RequireComponent(typeof(Animator), typeof(SpriteRenderer))]
-public class PlayerLooks : MonoBehaviour {
+public class Looks : MonoBehaviour {
 
     private Animator cachedAnimator;
     private SpriteRenderer cachedRenderer;

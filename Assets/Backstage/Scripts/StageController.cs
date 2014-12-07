@@ -4,20 +4,18 @@ using UnityEngine.Events;
 public class StageController : MonoBehaviour {
 
     public Transform player;
+    public BackgroundScroll background;
+    public Transporter transporter;
 
-    public float scrollThreshold = 2f, windThreshold = 1f;
-
-    public UnityEvent scrollLeftOn, scrollRightOn, scrollOff, windLeftOn, windRightOn, windOff;
-
-    public int scroll = 0, wind = 0;
+    public float scrollThreshold = 2f, factor = 2f, exponent = 2f;
 
     private void Update() {
         var delta = player.position - transform.position;
 
-        var newScroll = delta.x < -scrollThreshold ? -1 : delta.x > scrollThreshold ? 1 : 0;
-        var newWind = delta.y > windThreshold ? scroll : 0;
+        var power = Mathf.Max(0f, Mathf.Abs(delta.x) - scrollThreshold) * Mathf.Sign(-delta.x);
+        power *= Mathf.Pow(Mathf.Abs(power), Mathf.Max(0f, exponent - 1f)) * factor;
 
-        scroll = newScroll;
-        wind = newWind;
+        background.speed = power;
+        transporter.speed = power;
     }
 }
