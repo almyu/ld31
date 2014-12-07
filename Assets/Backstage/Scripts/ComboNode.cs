@@ -28,7 +28,7 @@ public class ComboNode : MonoBehaviour, ISerializationCallbackReceiver {
         var numHits = Physics2D.OverlapCircleNonAlloc((Vector2) pos, attackDirection.magnitude, targetCache, layerMask);
 
         for (int i = 0; i < numHits; ++i) {
-            var toTarget = targetCache[i].transform.position - pos;
+            var toTarget = targetCache[i].bounds.center - pos;
 
             if (Vector3.Angle(attackDirection, toTarget) < attackAngle)
                 targetCache[i].GetComponent<Mob>().health -= damage;
