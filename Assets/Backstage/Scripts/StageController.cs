@@ -17,5 +17,7 @@ public class StageController : MonoBehaviour {
 
         background.speed = power;
         transporter.speed = power;
+
+        Motor.wind.x = power;
     }
 }

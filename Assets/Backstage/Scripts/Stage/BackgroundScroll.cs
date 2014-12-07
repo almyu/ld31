@@ -35,7 +35,7 @@ public class BackgroundScroll : MonoBehaviour {
         for (int i = 0; i < tileVariants.Length; ++i)
             tileVariants[i].chance = (float) tileVariants[i].weight / weightSum;
 
-        stride = refSize.x / tileVariants[0].sprite.pixelsPerUnit;
+        stride = (refSize.x - 0.5f) / tileVariants[0].sprite.pixelsPerUnit;
 
         var numTiles = Mathf.CeilToInt(width / stride);
 

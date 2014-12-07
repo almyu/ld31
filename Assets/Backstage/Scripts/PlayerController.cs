@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
 
-[RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(Motor))]
 public class PlayerController : MonoSingleton<PlayerController> {
 
     public float speed = 5f;
@@ -11,14 +11,23 @@ public class PlayerController : MonoSingleton<PlayerController> {
     public class VelocityChangeEvent : UnityEvent<string, float> {}
     public VelocityChangeEvent onVelocityChange;
 
-    public bool isLanded = true;
+    private Motor cachedMotor;
+    private bool wannaJump = false;
+
+    private void Awake() {
+        cachedMotor = GetComponent<Motor>();
+    }
+
+    private void Update() {
+        wannaJump = wannaJump || Input.GetButtonDown("Jump");
+    }
 
     private void FixedUpdate() {
         var axis = Input.GetAxis("Horizontal");
         var vel = Mathf.Approximately(axis, 0f) ? 0f : axis * speed; // axis < 0f ? -speed : speed;
 
-        rigidbody2D.velocity = rigidbody2D.velocity.WithX(vel);
-        onVelocityChange.Invoke("Velocity", rigidbody2D.velocity.x);
+        cachedMotor.velocity = cachedMotor.velocity.WithX(vel);
+        onVelocityChange.Invoke("Velocity", cachedMotor.velocity.x);
 
         if (vel != 0f) {
             var facingRight = Quaternion.Angle(transform.rotation, Quaternion.identity) < 15f;
@@ -26,19 +35,14 @@ public class PlayerController : MonoSingleton<PlayerController> {
                 transform.rotation = Quaternion.AngleAxis(facingRight ? 180f : 0f, Vector3.up);
         }
 
-        if (Input.GetButtonDown("Jump")) Jump();
-
-        isLanded = false;
-    }
-
-    private void OnCollisionStay2D(Collision2D coll) {
-        if (coll.contacts[0].normal.y > 0.5f) isLanded = true;
+        if (wannaJump) {
+            wannaJump = false;
+            Jump();
+        }
     }
 
     public void Jump() {
-        if (!isLanded) return;
-
-        rigidbody2D.velocity = rigidbody2D.velocity.WithY(jumpForce);
-        isLanded = false;
+        if (cachedMotor.isGrounded)
+            cachedMotor.velocity.y = jumpForce;
     }
 }
