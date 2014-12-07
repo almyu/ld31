@@ -12,10 +12,10 @@ public class BackgroundScroll : MonoBehaviour {
     }
 
     public TileVariant[] tileVariants;
-    public Vector2 extent;
     public int sortingOrder;
 
-    public float speed;
+    public float speed, width;
+    private float stride;
 
     private void Awake() {
         if (tileVariants.Length == 0) return;
@@ -35,10 +35,16 @@ public class BackgroundScroll : MonoBehaviour {
         for (int i = 0; i < tileVariants.Length; ++i)
             tileVariants[i].chance = (float) tileVariants[i].weight / weightSum;
 
-        for (var pos = -extent; pos.x + refSize.x < extent.x; pos.x += refSize.x) {
-            var tile = new GameObject("BackgroundTile", typeof(SpriteRenderer));
+        stride = refSize.x / tileVariants[0].sprite.pixelsPerUnit;
+
+        var numTiles = Mathf.CeilToInt(width / stride);
+
+        width = numTiles * stride;
+
+        for (var i = 0; i < numTiles; ++i) {
+            var tile = new GameObject("Tile", typeof(SpriteRenderer));
             tile.transform.parent = transform;
-            tile.transform.localPosition = pos.WithZ(0f);
+            tile.transform.localPosition = Vector2.right * i * stride;
 
             var ren = tile.GetComponent<SpriteRenderer>();
             ren.sprite = RollSprite();
@@ -59,12 +65,14 @@ public class BackgroundScroll : MonoBehaviour {
 
     private void Update() {
         foreach (Transform child in transform) {
-            child.localPosition += Vector3.right * speed * Time.deltaTime;
+            var x = child.localPosition.x + speed * Time.deltaTime;
 
-            if (Mathf.Abs(child.localPosition.x) > extent.x) {
+            if (0f > x || x >= width) {
                 child.GetComponent<SpriteRenderer>().sprite = RollSprite();
-                child.localPosition = Vector2.right * extent.x * (child.localPosition.x < 0f ? 2f : -2f);
+                x = Mathf.Repeat(x + width, width);
             }
+
+            child.localPosition = child.localPosition.WithX(x);
         }
     }
 }
