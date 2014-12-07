@@ -19,6 +19,7 @@ public class ComboInput : MonoBehaviour {
 
             if (!Input.GetButtonDown(next.button)) continue;
 
+            next.Execute();
             next.action.Invoke();
             current = child;
             expirity = Time.timeSinceLevelLoad + next.timeout;

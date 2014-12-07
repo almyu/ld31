@@ -1,46 +1,50 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
 
-public class ComboNode : MonoBehaviour {
+public class ComboNode : MonoBehaviour, ISerializationCallbackReceiver {
 
     public string button = "Fire1";
     public float timeout = 0.5f;
 
-    public Vector2 attackCenter = new Vector2(0f, 0.5f), attackAngles = new Vector2(30f, 180f);
-    public float attackRadius = 1f;
+    public float editableAttackDirection = 0f, editableAttackRadius = 1f;
+    [HideInInspector]
+    public Vector2 attackDirection = Vector2.right;
+    public float attackAngle = 60f;
+    public int damage = 0;
 
     public UnityEvent action;
 
-    public bool CheckReach(Transform attacker, Collider2D target) {
-        var center = attacker.position + attackCenter.WithZ(0f);
+    private static readonly int layerMask = 1 << 9;
+    private static Collider2D[] targetCache = new Collider2D[32];
 
-        if (target.bounds.SqrDistance(center) > attackRadius * attackRadius) return false;
+    public void OnBeforeSerialize() {}
 
-        var toTarget = target.bounds.center - center;
+    public void OnAfterDeserialize() {
+        attackDirection = Quaternion.AngleAxis(editableAttackDirection, Vector3.forward) * Vector3.right * editableAttackRadius;
+    }
 
-        var hsector = (attackAngles[1] - attackAngles[0]) * 0.5f;
-        var angle = attackAngles[0] + hsector;
+    public void Execute() {
+        var pos = transform.position;
+        var numHits = Physics2D.OverlapCircleNonAlloc((Vector2) pos, attackDirection.magnitude, targetCache, layerMask);
 
-        return Quaternion.Angle(
-            Quaternion.LookRotation(toTarget, Vector3.forward),
-            Quaternion.AngleAxis(angle, Vector3.forward)) <= hsector;
+        for (int i = 0; i < numHits; ++i) {
+            var toTarget = targetCache[i].transform.position - pos;
+
+            if (Vector3.Angle(attackDirection, toTarget) < attackAngle)
+                targetCache[i].GetComponent<Mob>().health -= damage;
+
+        }
     }
 
 #if UNITY_EDITOR
     private void OnDrawGizmosSelected() {
         if (UnityEditor.Selection.activeTransform != transform) return;
 
-        var pos = attackCenter.WithZ(0f);
+        var pos = transform.position;
 
-        var pl = FindObjectOfType<PlayerController>();
-        if (pl)
-            pos += pl.transform.position;
-
-        var angle = attackAngles[1] - attackAngles[0];
-        var nrm = Quaternion.AngleAxis(attackAngles[0], Vector3.forward) * Vector3.right;
-
-        UnityEditor.Handles.color = Color.green;
-        UnityEditor.Handles.DrawWireArc(pos, Vector3.forward, nrm, angle, attackRadius);
+        UnityEditor.Handles.color = Color.red.WithA(0.5f);
+        UnityEditor.Handles.DrawSolidArc(pos, Vector3.forward, attackDirection, attackAngle, attackDirection.magnitude);
+        UnityEditor.Handles.DrawSolidArc(pos, Vector3.forward, attackDirection, -attackAngle, attackDirection.magnitude);
     }
 #endif
 }
