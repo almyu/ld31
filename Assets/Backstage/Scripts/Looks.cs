@@ -3,6 +3,9 @@
 [RequireComponent(typeof(Animator), typeof(SpriteRenderer))]
 public class Looks : MonoBehaviour {
 
+    public string stance = "Stance";
+    public Sprite jump, fall;
+
     private Animator cachedAnimator;
     private SpriteRenderer cachedRenderer;
 
@@ -21,6 +24,14 @@ public class Looks : MonoBehaviour {
         cachedAnimator.Play(stateName);
     }
 
+    public void SetDefault() {
+        SetAnimation(stance);
+    }
+
+    public bool IsDefault() {
+        return cachedAnimator.enabled || cachedRenderer.sprite == jump || cachedRenderer.sprite == fall;
+    }
+
     public void FaceRight() {
         transform.rotation = Quaternion.identity;
     }
@@ -29,10 +40,21 @@ public class Looks : MonoBehaviour {
         transform.rotation = Quaternion.AngleAxis(180f, Vector3.up);
     }
 
-    public void SetApparentVelocity(float vel) {
-        if (vel < -Mathf.Epsilon) FaceLeft();
-        else if (vel > Mathf.Epsilon) FaceRight();
+    public void SetApparentVelocity(float velx) {
+        if (velx < -Mathf.Epsilon) FaceLeft();
+        else if (velx > Mathf.Epsilon) FaceRight();
 
-        cachedAnimator.SetFloat("Velocity", vel);
+        cachedAnimator.SetFloat("Velocity", velx);
+    }
+
+    public void SetApparentVelocity(Vector2 vel) {
+        SetApparentVelocity(vel.x);
+
+        if (!IsDefault()) return;
+
+        if (Mathf.Approximately(vel.y, 0f))
+            SetAnimation(stance);
+        else
+            SetSprite(vel.y > 0f ? jump : fall);
     }
 }

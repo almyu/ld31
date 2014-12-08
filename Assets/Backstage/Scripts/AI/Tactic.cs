@@ -69,7 +69,7 @@ public class Tactic : MonoBehaviour {
 
     public void SetVelocity(Vector2 vel) {
         if (cachedMotor) cachedMotor.velocity = vel;
-        if (cachedLooks) cachedLooks.SetApparentVelocity(vel.x);
+        if (cachedLooks) cachedLooks.SetApparentVelocity(vel);
     }
 
     public void Follow(float distance) {
