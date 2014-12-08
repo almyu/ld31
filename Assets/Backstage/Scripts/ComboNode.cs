@@ -22,16 +22,7 @@ public class ComboNode : MonoBehaviour, ISerializationCallbackReceiver {
     }
 
     public void Execute(Sectorcaster caster) {
-        caster.Cast(attackDirection, attackAngle, coll => {
-            coll.GetComponent<Mob>().health -= damage;
-
-            if (particles) {
-                var target = coll.bounds.center;
-
-                Instantiate(particles, target,
-                    Quaternion.RotateTowards(Quaternion.LookRotation(target - transform.position), Random.rotation, 15f));
-            }
-        });
+        caster.Cast(attackDirection, attackAngle, coll => coll.GetComponent<Mortal>().Hit(damage, transform.position));
     }
 
 #if UNITY_EDITOR

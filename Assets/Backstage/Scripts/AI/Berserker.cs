@@ -4,10 +4,10 @@ using UnityEngine.Events;
 public class Berserker : Tactic {
 
     public Sectorcaster caster;
-    public GameObject attackParticles;
 
+    public int damage;
     public float attackRange = 1f, attackCooldown = 1f, recoveryTime = 0.3f;
-    public UnityEvent onAttack, onAttackSuccess, onRecover;
+    public UnityEvent onAttack, onRecover;
 
     private float nextAttack, recoveryTimer;
 
@@ -37,15 +37,6 @@ public class Berserker : Tactic {
 
     public void Attack() {
         onAttack.Invoke();
-        caster.Cast(transform.right * attackRange, 60f, coll => {
-            onAttackSuccess.Invoke();
-
-            if (attackParticles) {
-                var target = coll.bounds.center;
-
-                Instantiate(attackParticles, target,
-                    Quaternion.RotateTowards(Quaternion.LookRotation(target - caster.transform.position), Random.rotation, 15f));
-            }
-        });
+        caster.Cast(transform.right * attackRange, 60f, coll => coll.GetComponent<Mortal>().Hit(damage, caster.transform.position));
     }
 }
