@@ -11,6 +11,7 @@ public class ComboNode : MonoBehaviour, ISerializationCallbackReceiver {
     public Vector2 attackDirection = Vector2.right;
     public float attackAngle = 60f;
     public int damage = 0;
+    public GameObject particles;
 
     public UnityEvent action;
 
@@ -25,14 +26,22 @@ public class ComboNode : MonoBehaviour, ISerializationCallbackReceiver {
 
     public void Execute() {
         var pos = transform.position;
+
         var numHits = Physics2D.OverlapCircleNonAlloc((Vector2) pos, attackDirection.magnitude, targetCache, layerMask);
+        if (numHits == 0) return;
+
+        var dir = transform.rotation * attackDirection;
 
         for (int i = 0; i < numHits; ++i) {
             var toTarget = targetCache[i].bounds.center - pos;
 
-            if (Vector3.Angle(attackDirection, toTarget) < attackAngle)
-                targetCache[i].GetComponent<Mob>().health -= damage;
+            if (Vector3.Angle(dir, toTarget) > attackAngle) continue;
 
+            targetCache[i].GetComponent<Mob>().health -= damage;
+
+            if (particles)
+                Instantiate(particles, targetCache[i].bounds.center,
+                    Quaternion.RotateTowards(Quaternion.LookRotation(toTarget), Random.rotation, 15f));
         }
     }
 
