@@ -33,4 +33,8 @@ public class Motor : MonoBehaviour {
             velocity.y = 0f;
         }
     }
+
+    public void ResetVelocity() {
+        velocity = Vector2.zero;
+    }
 }
