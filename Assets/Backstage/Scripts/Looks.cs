@@ -34,6 +34,5 @@ public class Looks : MonoBehaviour {
         else if (vel > Mathf.Epsilon) FaceRight();
 
         cachedAnimator.SetFloat("Velocity", vel);
-        Debug.Log("Vel: " + vel);
     }
 }
