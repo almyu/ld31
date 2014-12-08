@@ -11,9 +11,11 @@ public class PlayerController : MonoSingleton<PlayerController> {
     public LayerMask doubleJumpMobs;
 
     private Motor cachedMotor;
+    private Vector3 initialPosition;
 
     private void Awake() {
         cachedMotor = GetComponent<Motor>();
+        initialPosition = transform.position;
     }
 
     private void Update() {
@@ -30,5 +32,13 @@ public class PlayerController : MonoSingleton<PlayerController> {
     public void Jump() {
         if (cachedMotor.isGrounded || HasMobsAbove())
             cachedMotor.velocity.y = jumpForce;
+    }
+
+    public void Respawn() {
+        var dbl = FindObjectOfType<PlayerStuntDouble>();
+        if (dbl) dbl.Activate(); // else game over
+
+        cachedMotor.ResetVelocity();
+        transform.position = initialPosition;
     }
 }

@@ -10,8 +10,11 @@ public class Mortal : MonoBehaviour {
     public GameObject hitParticles, deathParticles;
     public UnityEvent onHit, onDeath;
 
+    private int initialHealth;
+
     private void Awake() {
         if (!refCollider) refCollider = GetComponentInChildren<Collider2D>();
+        initialHealth = health;
     }
 
     public void Hit(int amount, Vector3 source) {
@@ -26,11 +29,13 @@ public class Mortal : MonoBehaviour {
     }
 
     public void Kill() {
-        onDeath.Invoke();
-
-        Destroy(gameObject);
-
         if (deathParticles)
             Instantiate(deathParticles, refCollider.bounds.center, Quaternion.identity);
+
+        onDeath.Invoke();
+    }
+
+    public void Revive() {
+        health = initialHealth;
     }
 }
