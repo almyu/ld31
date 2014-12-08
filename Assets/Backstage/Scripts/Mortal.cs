@@ -14,6 +14,9 @@ public class Mortal : MonoBehaviour {
 
     private void Awake() {
         if (!refCollider) refCollider = GetComponentInChildren<Collider2D>();
+    }
+
+    private void Start() {
         initialHealth = health;
     }
 

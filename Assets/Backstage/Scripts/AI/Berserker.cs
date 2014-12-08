@@ -30,9 +30,16 @@ public class Berserker : Tactic {
         }
     }
 
+    protected new void OnEnable() {
+        base.OnEnable();
+        ++MobSpawn.totalBerserks;
+    }
+
     protected new void OnDisable() {
         base.OnDisable();
         onRecover.Invoke();
+
+        --MobSpawn.totalBerserks;
     }
 
     public void Attack() {

@@ -4,9 +4,8 @@ public class AI : MonoBehaviour {
 
     public Tactic initialTactic;
 
-    private void Awake() {
+    private void Start() {
         foreach (var tactic in GetComponentsInChildren<Tactic>())
-            if (tactic != initialTactic)
-                tactic.enabled = false;
+            tactic.enabled = tactic == initialTactic;
     }
 }
