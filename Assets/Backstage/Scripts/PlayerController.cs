@@ -19,7 +19,7 @@ public class PlayerController : MonoSingleton<PlayerController> {
     }
 
     private void Update() {
-        cachedMotor.velocity.x = Input.GetAxis("Horizontal") * speed;
+        cachedMotor.velocity.x = Input.GetAxisRaw("Horizontal") * speed;
 
         if (Input.GetButtonDown("Jump")) Jump();
     }

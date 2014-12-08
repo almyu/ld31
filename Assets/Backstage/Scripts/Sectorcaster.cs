@@ -6,11 +6,11 @@ public class Sectorcaster : MonoBehaviour {
 
     private static Collider2D[] hitCache = new Collider2D[32];
 
-    public void Cast(Vector2 dir, float angle, System.Action<Collider2D> action) {
+    public int Cast(Vector2 dir, float angle, System.Action<Collider2D> action) {
         var pos = (Vector2) transform.position;
 
         var numHits = Physics2D.OverlapCircleNonAlloc(pos, dir.magnitude, hitCache, layers.value);
-        if (numHits == 0) return;
+        if (numHits == 0) return 0;
 
         dir = transform.rotation * dir;
 
@@ -20,5 +20,6 @@ public class Sectorcaster : MonoBehaviour {
             if (Vector2.Angle(dir, toTarget) <= angle)
                 action(hitCache[i]);
         }
+        return numHits;
     }
 }

@@ -9,6 +9,7 @@ public class Tactic : MonoBehaviour {
     }
 
     public float speed = 5f;
+    public float jumpForce = 8.5f;
 
     public Transition[] transitions;
     public float rethinkInterval = 1f;
@@ -71,20 +72,24 @@ public class Tactic : MonoBehaviour {
         }
     }
 
-    public Vector2 GetVelocityToFollow(float distance) {
+    public float GetVelocityToFollow(float distance) {
         var toPlayer = (Vector2) PlayerController.instance.transform.position - (Vector2) transform.position;
         var toPoint = toPlayer.x - Mathf.Sign(toPlayer.x) * distance;
 
         var dir = Mathf.Sign(toPoint) * Mathf.Min(Mathf.Abs(toPoint), 1f);
 
-        return Vector2.right * dir * speed;
+        return dir * speed;
     }
 
-    public void SetVelocity(Vector2 vel) {
-        if (cachedMotor) cachedMotor.velocity = vel;
+    public void SetMovementVelocity(float vel) {
+        if (cachedMotor) cachedMotor.velocity.x = vel;
+    }
+
+    public void Jump() {
+        if (cachedMotor) cachedMotor.velocity.y = jumpForce;
     }
 
     public void Follow(float distance) {
-        SetVelocity(GetVelocityToFollow(distance));
+        SetMovementVelocity(GetVelocityToFollow(distance));
     }
 }

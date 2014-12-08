@@ -37,6 +37,6 @@ public class Berserker : Tactic {
 
     public void Attack() {
         onAttack.Invoke();
-        caster.Cast(transform.right * attackRange, 60f, coll => coll.GetComponent<Mortal>().Hit(damage, caster.transform.position));
+        caster.Cast(Vector3.right * attackRange, 60f, coll => coll.GetComponent<Mortal>().Hit(damage, caster.transform.position));
     }
 }

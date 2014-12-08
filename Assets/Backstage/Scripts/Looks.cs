@@ -19,10 +19,11 @@ public class Looks : MonoBehaviour {
     }
 
     private void Update() {
-        if (!IsDefault() || !motor) return;
+        if (!motor) return;
 
         SetApparentVelocity(motor.velocity.x);
-        SetDefault();
+
+        if (IsDefault()) SetDefault();
     }
 
     public void SetSprite(Sprite sprite) {
