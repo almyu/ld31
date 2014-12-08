@@ -18,7 +18,7 @@ public class Tactic : MonoBehaviour {
     private Looks cachedLooks;
 
 
-    private void Awake() {
+    protected void Awake() {
         foreach (var trans in transitions)
             weightSum += trans.weight;
 
@@ -26,15 +26,15 @@ public class Tactic : MonoBehaviour {
         cachedLooks = GetComponentInChildren<Looks>();
     }
 
-    private void OnEnable() {
+    protected void OnEnable() {
         Invoke("Rethink", rethinkInterval);
     }
 
-    private void OnDisable() {
+    protected void OnDisable() {
         CancelInvoke("Rethink");
     }
 
-    private Tactic RollNext() {
+    protected Tactic RollNext() {
         var roll = Random.Range(0, weightSum);
 
         foreach (var trans in transitions) {
@@ -56,6 +56,21 @@ public class Tactic : MonoBehaviour {
             SwitchTo(next);
         else
             Invoke("Rethink", rethinkInterval);
+    }
+
+    public Vector3 GetPlayerPosition() {
+        return PlayerController.instance.transform.position;
+    }
+
+    public float GetDistanceToPlayer(int dimensions = 1) {
+        var playerPos = GetPlayerPosition();
+        var pos = transform.position;
+
+        switch (dimensions) {
+        case 1:  return Mathf.Abs(playerPos.x - pos.x);
+        case 2:  return Vector2.Distance((Vector2) playerPos, (Vector2) pos);
+        default: return Vector3.Distance(playerPos, pos);
+        }
     }
 
     public Vector2 GetVelocityToFollow(float distance) {
