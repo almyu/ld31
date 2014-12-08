@@ -3,6 +3,8 @@
 [RequireComponent(typeof(Animator), typeof(SpriteRenderer))]
 public class Looks : MonoBehaviour {
 
+    public Motor motor;
+
     public string stance = "Stance";
     public Sprite jump, fall;
 
@@ -10,8 +12,17 @@ public class Looks : MonoBehaviour {
     private SpriteRenderer cachedRenderer;
 
     private void Awake() {
+        if (!motor) motor = GetComponentInChildren<Motor>();
+
         cachedAnimator = GetComponent<Animator>();
         cachedRenderer = GetComponent<SpriteRenderer>();
+    }
+
+    private void Update() {
+        if (!IsDefault() || !motor) return;
+
+        SetApparentVelocity(motor.velocity.x);
+        SetDefault();
     }
 
     public void SetSprite(Sprite sprite) {
@@ -25,7 +36,10 @@ public class Looks : MonoBehaviour {
     }
 
     public void SetDefault() {
-        SetAnimation(stance);
+        if (!motor || motor.isGrounded)
+            SetAnimation(stance);
+        else
+            SetSprite(motor.velocity.y > 0f ? jump : fall);
     }
 
     public bool IsDefault() {
@@ -45,16 +59,5 @@ public class Looks : MonoBehaviour {
         else if (velx > Mathf.Epsilon) FaceRight();
 
         cachedAnimator.SetFloat("Velocity", velx);
-    }
-
-    public void SetApparentVelocity(Vector2 vel) {
-        SetApparentVelocity(vel.x);
-
-        if (!IsDefault()) return;
-
-        if (Mathf.Approximately(vel.y, 0f))
-            SetAnimation(stance);
-        else
-            SetSprite(vel.y > 0f ? jump : fall);
     }
 }

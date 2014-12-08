@@ -15,7 +15,6 @@ public class Tactic : MonoBehaviour {
 
     private int weightSum;
     private Motor cachedMotor;
-    private Looks cachedLooks;
 
 
     protected void Awake() {
@@ -23,7 +22,6 @@ public class Tactic : MonoBehaviour {
             weightSum += trans.weight;
 
         cachedMotor = GetComponent<Motor>();
-        cachedLooks = GetComponentInChildren<Looks>();
     }
 
     protected void OnEnable() {
@@ -84,7 +82,6 @@ public class Tactic : MonoBehaviour {
 
     public void SetVelocity(Vector2 vel) {
         if (cachedMotor) cachedMotor.velocity = vel;
-        if (cachedLooks) cachedLooks.SetApparentVelocity(vel);
     }
 
     public void Follow(float distance) {
