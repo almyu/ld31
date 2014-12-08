@@ -19,6 +19,17 @@ public class StageController : MonoBehaviour {
 
     public Spinner[] spinners;
 
+    [System.Serializable]
+    public class Trigger {
+        public float windThreshold;
+        public UnityEvent on, off;
+
+        [HideInInspector]
+        public bool isOn;
+    }
+
+    public Trigger[] triggers;
+
     public float scrollThreshold = 2f, factor = 2f, exponent = 2f;
 
     private void LateUpdate() {
@@ -33,12 +44,22 @@ public class StageController : MonoBehaviour {
         foreach (var anim in animators)
             anim.speed = power;
 
+        foreach (var trigger in triggers) {
+            var state = trigger.windThreshold < 0f
+                ? power <= trigger.windThreshold
+                : power >= trigger.windThreshold;
+
+            if (state == trigger.isOn) continue;
+
+            (state ? trigger.on : trigger.off).Invoke();
+            trigger.isOn = state;
+        }
+
         Motor.wind.x = power;
     }
 
     private void Update() {
         foreach (var spinner in spinners)
-            //spinner.xf.localRotation *= Quaternion.AngleAxis(spinner.speed * Motor.wind.x * Time.deltaTime, spinner.axis);
             spinner.xf.Rotate(Vector3.forward, spinner.speed * Motor.wind.x * Time.deltaTime);
     }
 }
