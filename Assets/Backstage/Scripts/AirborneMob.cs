@@ -3,19 +3,19 @@
 [RequireComponent(typeof(Motor), typeof(Looks))]
 public class AirborneMob : MonoBehaviour {
 
+    public float kickThreshold = 10f;
     public Sprite sprite;
 
-    private Motor cachedMotor;
     private Looks cachedLooks;
 
 
     private void Awake() {
-        cachedMotor = GetComponent<Motor>();
         cachedLooks = GetComponent<Looks>();
     }
 
-    public void SendToMoon(float velocity) {
-        cachedMotor.velocity.y = velocity;
+    public void HandleCombo(ComboNode combo) {
+        if (combo.targetVelocityAdd.y < kickThreshold) return;
+
         cachedLooks.SetSprite(sprite);
     }
 }
