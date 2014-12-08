@@ -2,8 +2,9 @@
 
 public class Coward : Tactic {
 
+    public float safeDistance = 3f;
+
     public void Update() {
-        GetComponent<Motor>().velocity.x = 0f;
-        GetComponent<Looks>().SetApparentVelocity(0f);
+        Follow(safeDistance);
     }
 }

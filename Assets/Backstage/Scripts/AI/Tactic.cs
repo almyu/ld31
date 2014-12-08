@@ -8,15 +8,22 @@ public class Tactic : MonoBehaviour {
         public int weight;
     }
 
+    public float speed = 5f;
+
     public Transition[] transitions;
     public float rethinkInterval = 1f;
 
     private int weightSum;
+    private Motor cachedMotor;
+    private Looks cachedLooks;
 
 
     private void Awake() {
         foreach (var trans in transitions)
             weightSum += trans.weight;
+
+        cachedMotor = GetComponent<Motor>();
+        cachedLooks = GetComponentInChildren<Looks>();
     }
 
     private void OnEnable() {
@@ -49,5 +56,23 @@ public class Tactic : MonoBehaviour {
             SwitchTo(next);
         else
             Invoke("Rethink", rethinkInterval);
+    }
+
+    public Vector2 GetVelocityToFollow(float distance) {
+        var toPlayer = (Vector2) PlayerController.instance.transform.position - (Vector2) transform.position;
+        var toPoint = toPlayer.x - Mathf.Sign(toPlayer.x) * distance;
+
+        var dir = Mathf.Sign(toPoint) * Mathf.Min(Mathf.Abs(toPoint), 1f);
+
+        return Vector2.right * dir * speed;
+    }
+
+    public void SetVelocity(Vector2 vel) {
+        if (cachedMotor) cachedMotor.velocity = vel;
+        if (cachedLooks) cachedLooks.SetApparentVelocity(vel.x);
+    }
+
+    public void Follow(float distance) {
+        SetVelocity(GetVelocityToFollow(distance));
     }
 }
