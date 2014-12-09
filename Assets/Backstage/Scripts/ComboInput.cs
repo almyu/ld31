@@ -7,7 +7,7 @@ public class ComboInput : MonoBehaviour {
     public Transform root;
     public Transform current; // make private
     public float expirity = 0f;
-    public UnityEvent onBreak;
+    public UnityEvent onNext, onBreak;
 
     private Sectorcaster cachedCaster;
 
@@ -40,6 +40,7 @@ public class ComboInput : MonoBehaviour {
                 if (next.mod == ComboNode.Mod.Down && (axes.y < 0f) != (next.modCond == ComboNode.ModCondition.Yes)) continue;
             }
 
+            onNext.Invoke();
             next.Execute(cachedCaster);
             next.action.Invoke();
             current = child;

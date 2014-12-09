@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Events;
 
 public class Skyguard : MonoSingleton<Skyguard> {
 
@@ -7,6 +8,8 @@ public class Skyguard : MonoSingleton<Skyguard> {
     public float timeout = 1f;
     public float force = -10f;
     public int damage = 500;
+
+    public UnityEvent onHit;
 
     public void Activate(Motor motor) {
         Disappear(imp.gameObject);
@@ -24,6 +27,8 @@ public class Skyguard : MonoSingleton<Skyguard> {
 
         CancelInvoke("Return");
         Invoke("Return", timeout);
+
+        onHit.Invoke();
     }
 
     public void Return() {
