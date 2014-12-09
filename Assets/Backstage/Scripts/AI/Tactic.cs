@@ -2,59 +2,58 @@
 
 public class Tactic : MonoBehaviour {
 
-    [System.Serializable]
-    public struct Transition {
-        public Tactic next;
-        public int weight;
-    }
+    public bool isDangerous;
+    public Tactic otherTactic;
+    public float rethinkInterval = 1f;
 
     public float speed = 5f;
     public float jumpForce = 8.5f;
 
-    public Transition[] transitions;
-    public float rethinkInterval = 1f;
-
-    private int weightSum;
     private Motor cachedMotor;
+
+    private float rethinkTimer, stunTimer;
 
 
     protected void Awake() {
-        foreach (var trans in transitions)
-            weightSum += trans.weight;
-
         cachedMotor = GetComponent<Motor>();
     }
 
-    protected void OnEnable() {
-        Invoke("Rethink", rethinkInterval);
-    }
+    protected void OnEnable() {}
 
-    protected void OnDisable() {
-        CancelInvoke("Rethink");
-    }
+    protected void OnDisable() {}
 
-    protected Tactic RollNext() {
-        var roll = Random.Range(0, weightSum);
-
-        foreach (var trans in transitions) {
-            if (roll < trans.weight) return trans.next;
-            roll -= trans.weight;
+    protected void Update() {
+        if (stunTimer > 0f) {
+            stunTimer -= Time.deltaTime;
+            return;
         }
 
-        return this;
+        if (rethinkTimer > 0f)
+            rethinkTimer -= Time.deltaTime;
+        else
+            Rethink();
     }
 
-    public void SwitchTo(Tactic other) {
+    public bool IsStunned() {
+        return stunTimer > 0f;
+    }
+
+    public void Stun(float time) {
+        stunTimer = time;
+    }
+
+    public void SwitchTactic() {
         enabled = false;
-        other.enabled = true;
+        otherTactic.enabled = true;
     }
 
     public void Rethink() {
-        var next = RollNext();
-        if (next != this)
-            SwitchTo(next);
-        else
-            Invoke("Rethink", rethinkInterval);
+        var scale = isDangerous ? MobSpawn.dangerometer : MobSpawn.peaceometer;
+
+        if (Random.value < scale)
+            SwitchTactic();
+
+        rethinkTimer = rethinkInterval;
     }
 
     public Vector3 GetPlayerPosition() {

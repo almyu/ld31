@@ -21,8 +21,12 @@ public class MobSpawn : MonoBehaviour {
         get { return totalAlive < Balance.instance.mobs; }
     }
 
-    public bool tooEasy {
-        get { return totalBerserks < Balance.instance.berserkers; }
+    public static float dangerometer {
+        get { return totalBerserks * 0.5f / Balance.instance.berserkers; }
+    }
+
+    public static float peaceometer {
+        get { return 1f - dangerometer; }
     }
 
 

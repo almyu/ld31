@@ -52,6 +52,7 @@ public class ComboNode : MonoBehaviour, ISerializationCallbackReceiver {
             ApplyVelocity(coll.gameObject, targetVelocityMul, targetVelocityAdd);
 
             coll.SendMessage("HandleCombo", this, SendMessageOptions.DontRequireReceiver);
+            coll.SendMessage("StunByDamage", damage, SendMessageOptions.DontRequireReceiver);
         });
 
         if (numHits == 0)

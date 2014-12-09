@@ -11,7 +11,10 @@ public class Berserker : Tactic {
 
     private float nextAttack, recoveryTimer;
 
-    private void Update() {
+    protected new void Update() {
+        base.Update();
+        if (IsStunned()) return;
+
         Follow(0.5f);
 
         var t = Time.timeSinceLevelLoad;

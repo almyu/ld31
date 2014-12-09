@@ -11,7 +11,10 @@ public class Coward : Tactic {
         safeDistance = Random.Range(safeDistanceRange[0], safeDistanceRange[1]);
     }
 
-    private void Update() {
+    protected new void Update() {
+        base.Update();
+        if (IsStunned()) return;
+
         Follow(safeDistance);
     }
 }
