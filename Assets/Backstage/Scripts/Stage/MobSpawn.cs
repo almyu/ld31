@@ -53,14 +53,7 @@ public class MobSpawn : MonoBehaviour {
         mob.GetComponent<Motor>().ground = Mathf.Lerp(groundRange[0], groundRange[1], layer);
         mob.GetComponentInChildren<SpriteRenderer>().sortingOrder = Mathf.RoundToInt(Mathf.Lerp(sortingRange[0], sortingRange[1], layer));
 
-        var berserker = mob.GetComponent<Berserker>();
-        berserker.damage = Balance.instance.mobDamage;
-
-        var nutsFactor = (float) totalBerserks / Balance.instance.berserkers;
-
-        mob.GetComponent<AI>().initialTactic = nutsFactor < Random.value
-            ? berserker as Tactic
-            : mob.GetComponent<Coward>();
+        mob.GetComponent<Berserker>().damage = Balance.instance.mobDamage;
     }
 
     private float RollCheckInterval() {
