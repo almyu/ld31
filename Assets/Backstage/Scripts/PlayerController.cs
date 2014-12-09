@@ -36,7 +36,8 @@ public class PlayerController : MonoSingleton<PlayerController> {
 
     public void Respawn() {
         var dbl = FindObjectOfType<PlayerStuntDouble>();
-        if (dbl) dbl.Activate(); // else game over
+        if (dbl) dbl.Activate();
+        else ComboCounter.instance.freemode = true;
 
         cachedMotor.ResetVelocity();
         transform.position = initialPosition;
