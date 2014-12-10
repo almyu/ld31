@@ -3,9 +3,9 @@
 public class Motor : MonoBehaviour {
 
     public static Vector2 wind;
-    public static float windReach = 7.89f;
     public static float gravity = -18.6f;
 
+    public float windReach = 7.89f;
     public float ground = -2.3f, groundError = 1e-2f;
 
     [HideInInspector]
@@ -27,7 +27,7 @@ public class Motor : MonoBehaviour {
 
         var meanVelocity = (oldVelocity + velocity) * 0.5f;
 
-        if (Mathf.Abs(cachedTransform.position.x) < windReach)
+        if (windReach <= 0f || Mathf.Abs(cachedTransform.position.x) < windReach)
             meanVelocity += wind;
 
         cachedTransform.position += (Vector3)(meanVelocity * Time.deltaTime);
