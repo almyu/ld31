@@ -35,7 +35,7 @@ public class Tactic : MonoBehaviour {
     }
 
     public bool IsStunned() {
-        return stunTimer > 0f;
+        return stunTimer > 0f || (cachedMotor && !cachedMotor.isGrounded);
     }
 
     public void Stun(float time) {
