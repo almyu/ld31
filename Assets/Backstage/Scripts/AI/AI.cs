@@ -9,16 +9,12 @@ public class AI : MonoBehaviour {
             tactic.enabled = tactic == initialTactic;
     }
 
-    public void Stun(float time) {
+    public void StunAll(float time) {
         foreach (var tactic in GetComponentsInChildren<Tactic>()) {
             if (!tactic.enabled) continue;
 
-            tactic.Stun(time);
+            tactic.Stun(time * Balance.instance.stunDurationFactor);
             return;
         }
-    }
-
-    public void StunByDamage(int amount) {
-        Stun(Balance.instance.stunSecondsPer1kDamage * amount / 1000f);
     }
 }

@@ -7,5 +7,5 @@ public class Balance : MonoSingleton<Balance> {
     public int mobs = 8;
     public int berserkers = 4;
     public float spawnPriority = 0.5f;
-    public float stunSecondsPer1kDamage = 1f;
+    public float stunDurationFactor = 1f;
 }

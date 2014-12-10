@@ -11,6 +11,7 @@ public class ComboNode : MonoBehaviour, ISerializationCallbackReceiver {
     public Vector2 attackDirection = Vector2.right;
     public float attackAngle = 60f;
     public int damage = 0;
+    public float stun = 0.2f;
 
     public Vector2 missVelocityMul = Vector2.one, missVelocityAdd;
     public Vector2 selfVelocityMul, selfVelocityAdd = Vector2.right * 10f;
@@ -52,7 +53,7 @@ public class ComboNode : MonoBehaviour, ISerializationCallbackReceiver {
             ApplyVelocity(coll.gameObject, targetVelocityMul, targetVelocityAdd);
 
             coll.SendMessage("HandleCombo", this, SendMessageOptions.DontRequireReceiver);
-            coll.SendMessage("StunByDamage", damage, SendMessageOptions.DontRequireReceiver);
+            coll.SendMessage("StunAll", stun, SendMessageOptions.DontRequireReceiver);
 
             ComboCounter.instance.AddPoints(damage);
             ComboCounter.instance.AddHit();
