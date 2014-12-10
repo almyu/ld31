@@ -54,6 +54,6 @@ public class Mortal : MonoBehaviour {
 
     public void UpdateBleeding() {
         if (bleedingParticles)
-            bleedingParticles.emissionRate = maxBleedingRate * health / initialHealth;
+            bleedingParticles.emissionRate = maxBleedingRate * (initialHealth - health) / initialHealth;
     }
 }
