@@ -6,22 +6,22 @@ public class BackgroundScroll : MonoBehaviour {
     public struct TileVariant {
         public Sprite sprite;
         public int weight;
-
-        [HideInInspector]
-        public float chance;
     }
 
+    [WeighedProperty]
     public TileVariant[] tileVariants;
     public int sortingOrder;
 
     public float speed, width;
+
+    private int weightSum;
     private float stride;
 
     private void Awake() {
         if (tileVariants.Length == 0) return;
 
         var refSize = tileVariants[0].sprite.rect.size;
-        var weightSum = 0;
+        weightSum = tileVariants[0].weight;
 
         for (int i = 1; i < tileVariants.Length; ++i) {
             var size = tileVariants[i].sprite.rect.size;
@@ -31,9 +31,6 @@ public class BackgroundScroll : MonoBehaviour {
 
             weightSum += tileVariants[i].weight;
         }
-
-        for (int i = 0; i < tileVariants.Length; ++i)
-            tileVariants[i].chance = (float) tileVariants[i].weight / weightSum;
 
         stride = (refSize.x - 0.5f) / tileVariants[0].sprite.pixelsPerUnit;
 
@@ -53,11 +50,11 @@ public class BackgroundScroll : MonoBehaviour {
     }
 
     private Sprite RollSprite() {
-        var roll = Random.value;
+        var roll = Random.Range(0, weightSum);
 
         foreach (var tile in tileVariants) {
-            if (roll <= tile.chance) return tile.sprite;
-            roll -= tile.chance;
+            if (roll < tile.weight) return tile.sprite;
+            roll -= tile.weight;
         }
 
         return tileVariants[0].sprite;
