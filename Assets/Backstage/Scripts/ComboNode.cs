@@ -29,7 +29,7 @@ public class ComboNode : MonoBehaviour, ISerializationCallbackReceiver {
     public ModCondition modCond;
     public Mod mod;
 
-    public UnityEvent action;
+    public UnityEvent action, onHitEach, onHit;
 
     public void OnBeforeSerialize() {}
 
@@ -57,10 +57,14 @@ public class ComboNode : MonoBehaviour, ISerializationCallbackReceiver {
 
             ComboCounter.instance.AddPoints(damage);
             ComboCounter.instance.AddHit();
+
+            onHitEach.Invoke();
         });
 
         if (numHits == 0)
             ApplyVelocity(player, missVelocityMul, missVelocityAdd);
+        else
+            onHit.Invoke();
     }
 
 #if UNITY_EDITOR
