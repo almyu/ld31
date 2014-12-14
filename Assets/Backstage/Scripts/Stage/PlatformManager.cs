@@ -12,6 +12,8 @@ public class PlatformManager : MonoSingleton<PlatformManager> {
     public PlatformSetup[] prefabs;
 
     public bool startWithPlatforms = true;
+    public int minHeight, maxHeight;
+    public float heightStep = 1f;
     public float width = 20f;
 
     private int weightSum;
@@ -63,7 +65,7 @@ public class PlatformManager : MonoSingleton<PlatformManager> {
             slot.transform.localPosition = Vector3.right * maxPlatformWidth * i;
 
             if (startWithPlatforms)
-                ReplacePrefab(slot.transform, RollPrefab(i));
+                ReplacePrefab(slot.transform, RollPrefab(i), RollHeight(i));
 
             slotIndices[i] = i;
         }
@@ -80,6 +82,10 @@ public class PlatformManager : MonoSingleton<PlatformManager> {
         return null;
     }
 
+    private float RollHeight(int index) {
+        return PseudoRandom.Range(Mathf.Abs(index + 50), minHeight, maxHeight + 1) * heightStep;
+    }
+
     private void Update() {
         var i = 0;
 
@@ -92,7 +98,7 @@ public class PlatformManager : MonoSingleton<PlatformManager> {
                 else
                     slotIndices[i] -= slotIndices.Length;
 
-                ReplacePrefab(child, RollPrefab(slotIndices[i]));
+                ReplacePrefab(child, RollPrefab(slotIndices[i]), RollHeight(slotIndices[i]));
                 x = Mathf.Repeat(x + width, width);
             }
 
@@ -106,7 +112,7 @@ public class PlatformManager : MonoSingleton<PlatformManager> {
             DestroyImmediate(slot.GetChild(i).gameObject);
     }
 
-    private void ReplacePrefab(Transform slot, Platform prefab) {
+    private void ReplacePrefab(Transform slot, Platform prefab, float height) {
         var actual = slot.GetComponentInChildren<Platform>();
         if (actual && prefab && Mathf.Approximately(actual.width, prefab.width)) return;
 
@@ -116,6 +122,7 @@ public class PlatformManager : MonoSingleton<PlatformManager> {
         if (prefab) {
             var obj = (GameObject) Instantiate(prefab.gameObject, Vector3.zero, Quaternion.identity);
             obj.transform.SetParent(slot, false);
+            obj.transform.localPosition = Vector3.up * height;
         }
     }
 
