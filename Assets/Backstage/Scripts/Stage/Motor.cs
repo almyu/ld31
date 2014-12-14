@@ -50,4 +50,9 @@ public class Motor : MonoBehaviour {
     public void ResetVelocity() {
         velocity = Vector2.zero;
     }
+
+    public void ForceLand() {
+        cachedTransform.position = cachedTransform.position.WithY(lastFloorLevel);
+        velocity.y = 0f;
+    }
 }
