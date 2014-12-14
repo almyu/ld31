@@ -9,10 +9,12 @@ public class FrameLagProcess : MonoSingleton<FrameLagProcess> {
 
     private IEnumerator DoLag(int frames) {
         TimescaleStack.Push(0f);
+        ++Motor.freezeCounter;
 
         while (frames-- > 0)
             yield return null;
 
+        --Motor.freezeCounter;
         TimescaleStack.Pop();
     }
 }

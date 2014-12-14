@@ -4,6 +4,7 @@ public class Motor : MonoBehaviour {
 
     public static Vector2 wind;
     public static float gravity = -18.6f;
+    public static int freezeCounter = 0;
 
     public float windReach = 7.89f;
     public float ground = -2.3f, groundError = 1e-2f;
@@ -25,6 +26,8 @@ public class Motor : MonoBehaviour {
     }
 
     private void Update() {
+        if (freezeCounter > 0) return;
+
         var oldVelocity = velocity;
         velocity.y += gravity * Time.deltaTime;
 
