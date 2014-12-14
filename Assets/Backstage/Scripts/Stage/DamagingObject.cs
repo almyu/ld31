@@ -11,8 +11,7 @@ public class DamagingObject : MonoBehaviour {
             mortal.Hit(damage, transform.position);
 
         var motor = coll.GetComponent<Motor>();
-        if (motor) {
+        if (motor)
             motor.velocity = (motor.transform.position - transform.position).normalized * force;
-        }
     }
 }
