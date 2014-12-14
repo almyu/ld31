@@ -6,14 +6,14 @@ public class ComboCounter : MonoSingleton<ComboCounter> {
     public Text pointsLabel, hitsLabel;
     public bool freemode = false;
 
-    private int points, hits;
+    private long points, hits;
 
     private void Update() {
         pointsLabel.text = points + "";
         hitsLabel.text = hits + "";
     }
 
-    public void AddPoints(int pts) {
+    public void AddPoints(long pts) {
         if (!freemode)
             points += pts;
     }
