@@ -22,6 +22,8 @@ public class PlayerController : MonoSingleton<PlayerController> {
     }
 
     private void Update() {
+        if (Motor.freezeCounter > 0) return;
+
         cachedMotor.velocity.x = Input.GetAxisRaw("Horizontal") * speed;
 
         if (cachedMotor.isGrounded)
