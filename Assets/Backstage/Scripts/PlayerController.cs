@@ -6,12 +6,15 @@ public class PlayerController : MonoSingleton<PlayerController> {
 
     public float speed = 5f;
     public float jumpForce = 10f;
+    public float jumpLastChanceTimeout = 0.1f;
 
     public float doubleJumpDetectHeight = 3f;
     public LayerMask doubleJumpMobs;
 
     private Motor cachedMotor;
     private Vector3 initialPosition;
+
+    private float jumpLastChanceTimer;
 
     private void Awake() {
         cachedMotor = GetComponent<Motor>();
@@ -20,6 +23,11 @@ public class PlayerController : MonoSingleton<PlayerController> {
 
     private void Update() {
         cachedMotor.velocity.x = Input.GetAxisRaw("Horizontal") * speed;
+
+        if (cachedMotor.isGrounded)
+            jumpLastChanceTimer = jumpLastChanceTimeout;
+        else
+            jumpLastChanceTimer -= Time.deltaTime;
 
         if (Input.GetButtonDown("Jump")) Jump();
     }
@@ -30,7 +38,7 @@ public class PlayerController : MonoSingleton<PlayerController> {
     }
 
     public void Jump() {
-        if (cachedMotor.isGrounded || HasMobsAbove())
+        if (jumpLastChanceTimer > 0f || cachedMotor.isGrounded || HasMobsAbove())
             cachedMotor.velocity.y = jumpForce;
     }
 
