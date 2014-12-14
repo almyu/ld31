@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Events;
 
-public class SpotlightTrigger : MonoBehaviour {
+public class Spotlight : MonoBehaviour {
 
     public UnityEvent onTrigger;
 
