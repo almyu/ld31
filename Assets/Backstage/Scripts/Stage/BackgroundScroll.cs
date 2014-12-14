@@ -55,7 +55,7 @@ public class BackgroundScroll : MonoBehaviour {
     }
 
     private Sprite RollSprite(int tileIndex) {
-        var roll = PseudoRandom.Range(Mathf.Abs(tileIndex), 0, weightSum);
+        var roll = PseudoRandom.Range(tileIndex, 0, weightSum);
 
         foreach (var tile in tileVariants) {
             if (roll < tile.weight) return tile.sprite;

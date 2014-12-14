@@ -10,7 +10,7 @@ public static class PseudoRandom {
     }
 
     public static int Value(int index) {
-        return cache[index % cache.Length];
+        return cache[(index % cache.Length + cache.Length) % cache.Length];
     }
 
     public static int Range(int index, int min, int max) {

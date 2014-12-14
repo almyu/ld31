@@ -72,7 +72,7 @@ public class PlatformManager : MonoSingleton<PlatformManager> {
     }
 
     private Platform RollPrefab(int index) {
-        var roll = PseudoRandom.Range(Mathf.Abs(index + 100), 0, weightSum);
+        var roll = PseudoRandom.Range(index, 0, weightSum);
 
         foreach (var prefab in prefabs) {
             if (roll < prefab.weight) return prefab.prefab;
@@ -83,7 +83,7 @@ public class PlatformManager : MonoSingleton<PlatformManager> {
     }
 
     private float RollHeight(int index) {
-        return PseudoRandom.Range(Mathf.Abs(index + 50), minHeight, maxHeight + 1) * heightStep;
+        return PseudoRandom.Range(index, minHeight, maxHeight + 1) * heightStep;
     }
 
     private void Update() {
