@@ -13,6 +13,8 @@ public class Shadow : MonoBehaviour {
     }
 
     private void LateUpdate() {
-        cachedTransform.position = motor.transform.position.WithY(motor.lastFloorLevel);
+        cachedTransform.position = cachedTransform.position
+            .WithX(motor.transform.position.x)
+            .WithY(motor.lastFloorLevel);
     }
 }
