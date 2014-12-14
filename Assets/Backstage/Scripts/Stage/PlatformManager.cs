@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class PlatformManager : MonoBehaviour {
+public class PlatformManager : MonoSingleton<PlatformManager> {
 
     [System.Serializable]
     public class PlatformSetup {
@@ -11,11 +11,34 @@ public class PlatformManager : MonoBehaviour {
     [WeighedProperty]
     public PlatformSetup[] prefabs;
 
+    public bool startWithPlatforms = true;
     public float width = 20f;
 
     private int weightSum;
     private float maxPlatformWidth;
     private int[] slotIndices;
+
+
+    public bool GetPlatformFloor(Vector3 position, ref float floor) {
+        var xf = transform;
+        var x = position.x - xf.position.x;
+        if (0f > x || x > width) return false;
+
+        var wrappedX = Mathf.Repeat(x - xf.GetChild(0).transform.localPosition.x + width, width);
+        var slot = Mathf.RoundToInt(wrappedX / maxPlatformWidth) % slotIndices.Length;
+
+        var child = xf.GetChild(slot);
+        var platform = child.GetComponentInChildren<Platform>();
+        if (!platform) return false;
+
+        var platformPosition = platform.transform.position;
+        if (position.y < platformPosition.y) return false;
+
+        if (platform.width < Mathf.Abs(platformPosition.x - position.x) * 2f) return false;
+
+        floor = platformPosition.y;
+        return true;
+    }
 
 
     private void Awake() {
@@ -38,6 +61,9 @@ public class PlatformManager : MonoBehaviour {
             var slot = new GameObject("Slot" + i);
             slot.transform.SetParent(transform, false);
             slot.transform.localPosition = Vector3.right * maxPlatformWidth * i;
+
+            if (startWithPlatforms)
+                ReplacePrefab(slot.transform, RollPrefab(i));
 
             slotIndices[i] = i;
         }

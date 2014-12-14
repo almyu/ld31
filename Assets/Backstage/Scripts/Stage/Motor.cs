@@ -11,8 +11,20 @@ public class Motor : MonoBehaviour {
     [HideInInspector]
     public Vector2 velocity;
 
+    public float dynamicGround {
+        get {
+            var value = ground;
+
+            var platformMgr = PlatformManager.instance;
+            if (platformMgr)
+                platformMgr.GetPlatformFloor(cachedTransform.position, ref value);
+
+            return value;
+        }
+    }
+
     public bool isGrounded {
-        get { return cachedTransform.position.y <= ground + groundError; }
+        get { return cachedTransform.position.y <= dynamicGround + groundError; }
     }
 
     private Transform cachedTransform;
@@ -30,10 +42,12 @@ public class Motor : MonoBehaviour {
         if (windReach <= 0f || Mathf.Abs(cachedTransform.position.x) < windReach)
             meanVelocity += wind;
 
+        var floor = dynamicGround;
+
         cachedTransform.position += (Vector3)(meanVelocity * Time.deltaTime);
 
-        if (cachedTransform.position.y <= ground) {
-            cachedTransform.position = cachedTransform.position.WithY(ground);
+        if (cachedTransform.position.y <= floor) {
+            cachedTransform.position = cachedTransform.position.WithY(floor);
             velocity.y = 0f;
         }
     }
